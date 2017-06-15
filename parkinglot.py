@@ -77,5 +77,8 @@ def get_infomation():
     statusAll = status.find(projection = {'payload':1,'username':1,'_id':0})
     return jsonify(result = json.loads(dumps(statusAll)))
 
+port = os.getenv('PORT', '5000')
+host = '0.0.0.0'
+	
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host=host, port=int(port),debug=True,threaded=True)
