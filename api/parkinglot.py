@@ -11,7 +11,27 @@ from pymongo import MongoClient, ReturnDocument, collection
 from flask import jsonify, request
 from api import app
 from flask_mail import Message, Mail
-from apiMail import MailConfirm, MailForgot
+
+# coding=utf-8
+
+MailConfirm = """
+    --- Mail confirm ---
+    This is mail for confirm your account.
+    Please click the link : $domain$/authentication/$authen$
+    ------------------------------------------
+"""
+
+MailForgot = """
+    --- Mail Getting New Password ---
+    This is mail for getting new password.
+    Email: $email$
+    Username: $username$
+    Password: $password$
+    ------------------------------------------
+"""
+
+
+
 
 
 err = 0
