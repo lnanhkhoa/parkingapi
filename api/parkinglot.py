@@ -52,13 +52,14 @@ app.config.update(
     MAIL_PASSWORD='matkhaulagi'
 )
 
+mail = Mail(app)
 
 def password_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-
+@app.route("/sentmail")
 def sentmail(recipients, content):
-    try:
+    # try:
         message = content
         subject = "hello, %s" % recipients
         msg = Message(recipients=[recipients],
@@ -66,9 +67,9 @@ def sentmail(recipients, content):
                       body=message,
                       subject=subject)
         mail.send(msg)
-        return success
-    except:
-        return err
+        return "sent"
+    # except:
+        # return err
 
 # Username password
 # idparking01 123
@@ -107,7 +108,7 @@ def authentication(username, id):
 
 @app.route('/checkaccount/<username>/<password>', methods=['GET','POST'])
 def login(username, password):
-    if request.method == 'GET':
+    if True:
         userAuthen = userInApp.find_one({"username": username, "password": password})
         if userAuthen is not None:
             if userAuthen["is_authenticated"] is True:
@@ -119,7 +120,7 @@ def login(username, password):
 
 @app.route("/register/<email>/<username>/<password>", methods=['GET','POST'])
 def register(email, username, password):
-    if request.method == 'GET':
+    if True:
         checkExist = userInApp.find({"username": username}).count()
         if checkExist > 0:
             return jsonify(results=existed)
@@ -135,12 +136,12 @@ def register(email, username, password):
             content = MailConfirm.replace("$domain$", str(request.url_root)).replace("$authen$",
                                                                                      str(username + "/" + id))
             result_sent = sentmail(email, content)
-            if result_sent == success:
+            if result_sent == "sent":
                 return jsonify(results=success)
     return jsonify(results=err)
 
 
-@app.route("/changepassword/<username>/<oldpass>/<newpass>", methods=['GET','POST'])
+@app.route("/changepassword/<username>/<oldpass>/<newpass>", methods=['GET','POST','POST'])
 def changepassword(username, oldpass, newpass):
     userAuthen = userInApp.find_one({"username": username, "password": oldpass})
     if userAuthen is not None:
@@ -167,7 +168,7 @@ def forgotpassword(email):
                                           {'$set': {"password": newpass}})
         content = MailForgot.replace("$email$", email).replace("$username$", username).replace("$password$", newpass)
         result_sent = sentmail(email, content)
-        if result_sent == "Sent":
+        if result_sent == "sent":
             return jsonify(results=success)
     return jsonify(results=err)
 
@@ -180,7 +181,7 @@ def hello_world():
     return 'Hello World!'
 
 
-@app.route('/api/insert_one/<username>', methods=["GET"])
+@app.route('/api/insert_one/<username>', methods=["GET","POST"])
 def insert_one(username):
     checkExist = users.find({"username": username}).count()
     if checkExist > 0:
@@ -194,7 +195,7 @@ def insert_one(username):
         jsonify(results=success)
 
 
-@app.route('/api/checkuser/<username>', methods=["GET"])
+@app.route('/api/checkuser/<username>', methods=["GET","POST"])
 def checkuser(username):
     user = users.find_one({"username": username})
     if user is None:
@@ -202,7 +203,7 @@ def checkuser(username):
     return success
 
 
-@app.route('/api/update_status/<username>/<password>/<info>', methods=['GET'])
+@app.route('/api/update_status/<username>/<password>/<info>', methods=['GET','POST'])
 def update_status(username, password, info):
     # info = "12,300,10,100"
     info = info.split(',')
@@ -226,9 +227,7 @@ def update_status(username, password, info):
     return success
 
 
-@app.route('/api/getinformation', methods=['POST'])
+@app.route('/api/getinformation', methods=['GET','POST','POST'])
 def get_information():
-    if request.method == 'POST':
-        statusAll = status.find(projection={'payload': 1, 'username': 1, '_id': 0})
-        return jsonify(results=json.loads(dumps(statusAll)))
-    return jsonify(results=err)
+    statusAll = status.find(projection={'payload': 1, 'username': 1, '_id': 0})
+    return jsonify(results=json.loads(dumps(statusAll)))
