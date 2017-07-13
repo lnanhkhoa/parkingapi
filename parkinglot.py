@@ -72,12 +72,10 @@ def update_status(username, password, info):
         return err
     return success
 
-@app.route('/api/getinfomation',methods=['POST'])
+@app.route('/api/getinfomation',methods=['GET','POST'])
 def get_infomation():
-    if request.method == 'POST':
-		statusAll = status.find(projection = {'payload':1,'username':1,'_id':0})
-		return jsonify(result = json.loads(dumps(statusAll)))
-	return jsonify(result = err)
+	statusAll = status.find(projection = {'payload':1,'username':1,'_id':0})
+	return jsonify(result = json.loads(dumps(statusAll)))
 
 port = os.getenv('PORT', '5000')
 host = '0.0.0.0'
