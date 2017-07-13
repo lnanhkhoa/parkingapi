@@ -1,7 +1,7 @@
 import datetime
 import json,os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from pymongo import MongoClient, ReturnDocument
 from bson.json_util import dumps
 
@@ -72,10 +72,12 @@ def update_status(username, password, info):
         return err
     return success
 
-@app.route('/api/getinfomation',methods=['GET'])
+@app.route('/api/getinfomation',methods=['POST'])
 def get_infomation():
-    statusAll = status.find(projection = {'payload':1,'username':1,'_id':0})
-    return jsonify(result = json.loads(dumps(statusAll)))
+    if request.method == 'POST':
+		statusAll = status.find(projection = {'payload':1,'username':1,'_id':0})
+		return jsonify(result = json.loads(dumps(statusAll)))
+	return jsonify(result = err)
 
 port = os.getenv('PORT', '5000')
 host = '0.0.0.0'
