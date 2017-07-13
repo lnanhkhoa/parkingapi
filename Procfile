@@ -1,1 +1,1 @@
-web: python parkinglot.py
+web: python main.py
