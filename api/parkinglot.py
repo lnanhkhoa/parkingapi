@@ -122,7 +122,8 @@ def login(username, password):
 def register(email, username, password):
     if True:
         checkExist = userInApp.find({"email": email}).count()
-        if checkExist > 0:
+        checkExist1 = userInApp.find({"username": username}).count()
+        if checkExist > 0 or checkExist1 > 0:
             return jsonify(results=existed)
         else:
             user = {
