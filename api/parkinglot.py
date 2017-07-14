@@ -121,7 +121,7 @@ def login(username, password):
 @app.route("/register/<email>/<username>/<password>", methods=['GET','POST'])
 def register(email, username, password):
     if True:
-        checkExist = userInApp.find({"username": username, "email": email}).count()
+        checkExist = userInApp.find({"email": email}).count()
         if checkExist > 0:
             return jsonify(results=existed)
         else:
