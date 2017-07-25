@@ -182,18 +182,29 @@ def hello_world():
     return 'Hello World!'
 
 
-@app.route('/api/insert_one/<username>', methods=["GET","POST"])
-def insert_one(username):
-    checkExist = users.find({"username": username}).count()
-    if checkExist > 0:
-        jsonify(results=err)
-    else:
-        user = {
-            "username": username,
-            "password": 123
-        }
-        # collection.insert_one(user)
-        jsonify(results=success)
+@app.route('/api/insert_one', methods=['POST'])
+def insert_one():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        Longitude = request.form['Longitude']
+        Latitude = request.form['Latitude']
+        Address = request.form['Address']
+
+        checkExist = users.find({"username": username}).count()
+        print checkExist
+        if checkExist > 0:
+            return jsonify(results=existed)
+        else:
+            user = {
+                "username": username,
+                "password": password,
+                "Longitude":Longitude,
+                "Latitude": Latitude,
+                "Address": Address
+            }
+            users.insert_one(user)
+            return jsonify(results=success)
 
 
 @app.route('/api/checkuser/<username>', methods=["GET","POST"])
@@ -201,31 +212,32 @@ def checkuser(username):
     user = users.find_one({"username": username})
     if user is None:
         return err
-    return success
+    return jsonify(results=success)
 
 
-@app.route('/api/update_status/<username>/<password>/<info>', methods=['GET','POST'])
-def update_status(username, password, info):
+@app.route('/api/update_status', methods=['POST'])
+def update_status():
     # info = "12,300,10,100"
-    info = info.split(',')
-    for x in range(0, len(info)):
-        info[x] = int(info[x])
-    user = users.find_one({"username": username, "password": 123})
-    if user is None:
-        return err
-    updateStatus = status.find_one_and_update({"username": username},
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        bike = request.form['bike']
+        totalBike = request.form['totalBike']
+        car = request.form['car']
+        totalCar = request.form['totalCar']
+        user = users.find_one({"username": username, "password": password})
+        if user is None:
+            return jsonify(results=err)
+
+        updateStatus = status.find_one_and_update({"username": username},
                                               {'$set': {
-                                                  "payload": {
-                                                      "bike": info[0], "totalBike": info[1], "car": info[2],
-                                                      "totalCar": info[3]}
+                                                    "payload": {"bike": bike, "totalBike": totalBike, "car": car, "totalCar": totalCar, "Longitude":user['Longitude'], "Latitude":user['Latitude'], "Adress":user['Address']}
                                               }
                                               },
                                               projection={'username': True},
                                               upsert=True,
                                               return_document=ReturnDocument.AFTER)
-    if updateStatus is None:
-        return err
-    return success
+        return jsonify(results=success)
 
 
 @app.route('/api/getinformation', methods=['GET','POST','POST'])
