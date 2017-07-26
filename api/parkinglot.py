@@ -192,7 +192,7 @@ def insert_one():
         Address = request.form['Address']
 
         checkExist = users.find({"username": username}).count()
-        print checkExist
+        print (checkExist)
         if checkExist > 0:
             return jsonify(results=existed)
         else:
