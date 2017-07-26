@@ -231,7 +231,7 @@ def update_status():
 
         updateStatus = status.find_one_and_update({"username": username},
                                               {'$set': {
-                                                    "payload": {"bike": bike, "totalBike": totalBike, "car": car, "totalCar": totalCar, "Longitude":user['Longitude'], "Latitude":user['Latitude'], "Adress":user['Address']}
+                                                    "payload": {"bike": bike, "totalBike": totalBike, "car": car, "totalCar": totalCar, "Longitude":user['Longitude'], "Latitude":user['Latitude'], "Address":user['Address']}
                                               }
                                               },
                                               projection={'username': True},
