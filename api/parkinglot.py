@@ -17,7 +17,7 @@ from flask_mail import Message, Mail
 MailConfirm = """
     --- Mail confirm ---
     This is mail for confirm your account.
-    Please click the link : $domain$/authentication/$authen$
+    Please click the link : $domain$authentication/$authen$
     ------------------------------------------
 """
 
